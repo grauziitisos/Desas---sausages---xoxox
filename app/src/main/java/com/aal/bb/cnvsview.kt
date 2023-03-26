@@ -5,6 +5,10 @@ import android.view.View
 import android.app.Activity
 import androidx.window.layout.WindowMetrics;
 import androidx.window.layout.WindowMetricsCalculator;
+import android.graphics.RectF
+
+
+
 
 
 class cnvsview (context: Context) : View(context)  {
@@ -59,8 +63,83 @@ class cnvsview (context: Context) : View(context)  {
         var pp = Path()
         var windowMetrics = WindowMetricsCalculator.getOrCreate().computeCurrentWindowMetrics(context as Activity)
         println(d_width)
-        pp.quadTo(25f, 30f,  windowMetrics.bounds.right+0.0f, d_height+0.0f)
-        extraCanvas.drawPath(pp, paint1)
+        val OffsetV: Int = windowMetrics.bounds.top
+        val crd:
+                inTupleTsorrynotypeparamThere = MainActivity.Companion.state.setRutis(
+            inTupleTsorrynotypeparamThere(
+                inCetruple(
+                    OffsetV, OffsetV + (this.height - OffsetV) / 3,
+                    OffsetV + (this.height - OffsetV) * 2 / 3, OffsetV + (this.height - OffsetV)
+                ), inCetruple(0, this.width / 3, this.width * 2 / 3, this.width)
+            )
+        )
+        var pp1 = Path()
+        pp1.moveTo(            crd.vertik.a+0.0f,
+            crd.horiz.b+0.0f)
+        pp1.lineTo(
+            crd.vertik.d+0.0f,
+            crd.horiz.b+0.0f)
+
+        pp1.moveTo(
+            crd.vertik.a+0.0f,
+            crd.horiz.c+0.0f)
+        pp1.lineTo(
+            crd.vertik.d+0.0f,
+            crd.horiz.c+0.0f)
+        // ||||||||
+        pp1.moveTo(
+            crd.vertik.b+0.0f,
+            crd.horiz.a+0.0f)
+        pp1.lineTo(
+            crd.vertik.b+0.0f,
+            crd.horiz.d+0.0f)
+        pp1.moveTo(
+            crd.vertik.c+0.0f,
+            crd.horiz.a+0.0f)
+        pp1.lineTo(
+            crd.vertik.c+0.0f,
+            crd.horiz.d+0.0f)
+//        pp.quadTo(25f, 30f,  windowMetrics.bounds.right+0.0f, d_height+0.0f)
+        extraCanvas.drawPath(pp1, paint1)
+        val saurakais = Math.min(this.width, this.height - OffsetV)
+        val zimesPlatums = saurakais / 3 - 4 * 12
+        val left = this.width / 3 / 2 - zimesPlatums / 2 - 0
+        val hSolis = this.width / 3
+        val top = OffsetV + this.height / 3 / 2 - zimesPlatums / 2 - 0
+        val vSolis = (this.height - OffsetV) / 3
+        MainActivity.Companion.state.s(desuZime.krusts, 0, 0)
+        MainActivity.Companion.state.s(desuZime.nulle, 0, 1)
+        MainActivity.Companion.state.s(desuZime.krusts, 0, 2)
+        MainActivity.Companion.state.s(desuZime.nulle, 1, 0)
+        MainActivity.Companion.state.s(desuZime.krusts, 1, 1)
+        MainActivity.Companion.state.s(desuZime.nulle, 1, 2)
+        MainActivity.Companion.state.s(desuZime.krusts, 2, 0)
+        MainActivity.Companion.state.s(desuZime.nulle, 2, 1)
+        MainActivity.Companion.state.s(desuZime.krusts, 2, 2)
+        val drws:
+                Array<Array<desuZime?>> = MainActivity.Companion.state.g()
+        for (i in drws.indices) {
+            for (j in drws[0].indices) {
+                if (drws[i][j] === desuZime.nulle) {
+                    val rect = RectF((left + i * hSolis)+0.0f, (top + j * vSolis)+0.0f, (left + i * hSolis)+zimesPlatums+0.0f, (top + j * vSolis)+zimesPlatums+0.0f)
+                    extraCanvas.drawOval(rect, paint2)
+                }
+                if (drws[i][j] === desuZime.krusts) {
+                    pp1.moveTo(
+                        (left + i * hSolis)+0.0f, (top + j * vSolis)+0.0f)
+                                pp1.lineTo( (left + i * hSolis + zimesPlatums)+0.0f,
+                        (top + j * vSolis + zimesPlatums)+0.0f
+                    )
+                    pp1.moveTo(
+                        (left + i * hSolis)+0.0f, (top + j * vSolis + zimesPlatums)+0.0f)
+                                pp1.lineTo(
+                        (left + i * hSolis + zimesPlatums)+0.0f, (top + j * vSolis)+0.0f
+                    )
+                    extraCanvas.drawPath(pp1, paint1)
+                }
+            }
+        }
+
 
     }
 }
