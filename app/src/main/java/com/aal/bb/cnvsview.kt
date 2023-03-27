@@ -88,6 +88,7 @@ class cnvsview (context: Context) : View(context)  {
 //        val hasHit: Boolean? =
 //            event?.rawX?.let { MainActivity.Companion.state.hit(it?.roundToInt(), event?.rawY.roundToInt()) }
         if (hasHit) this.invalidate()
+        else return super.onTouchEvent(event)
         var uzvrtajs: desuZime? = null
         if (MainActivity.Companion.state.isVictory.also { uzvrtajs = it } != null) {
             if (uzvrtajs === desuZime.krusts) {
@@ -190,6 +191,7 @@ class cnvsview (context: Context) : View(context)  {
 
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
+        (this.context as Activity).setTitle("veiksmi ${MainActivity.Companion.vards}!" )
         canvas.drawBitmap(extraBitmap, 0f, 0f, null)
 //        var windowMetrics = WindowMetricsCalculator.getOrCreate().computeCurrentWindowMetrics(context as Activity)
         val OffsetV: Int = 0//this.top// windowMetrics.bounds.top
