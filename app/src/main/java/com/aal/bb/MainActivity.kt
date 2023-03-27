@@ -6,6 +6,7 @@ import android.os.Bundle
 class MainActivity : AppCompatActivity() {
     companion object {
         var state = desasState()
+        var vards : String =""
     }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

@@ -8,10 +8,12 @@ import androidx.window.layout.WindowMetrics;
 import androidx.window.layout.WindowMetricsCalculator;
 import android.graphics.RectF
 import android.view.MotionEvent
+import android.widget.EditText
 import androidx.appcompat.app.AlertDialog
 import java.util.*
 import kotlin.math.roundToInt
 
+// lietoju: https://github.com/googlecodelabs/android-kotlin-drawing-canvas/blob/master/app/src/main/java/com/example/android/minipaint/MyCanvasView.kt
 
 
 
@@ -21,10 +23,6 @@ class cnvsview (context: Context) : View(context)  {
     private lateinit var extraBitmap: Bitmap
     private val STROKE_WIDTH = 12f // has to be float
     private val STROKE_WIDTH_2 = 18f // has to be float
-
-    var windowMetrics = WindowMetricsCalculator.getOrCreate().computeCurrentWindowMetrics(context as Activity)
-    val d_height: Int = windowMetrics.bounds.height()+windowMetrics.bounds.top
-    val d_width: Int = windowMetrics.bounds.width()/*.width()+windowMetrics.bounds.left*/
 
     // Set up the paint with which to draw.
     private val paint1 = Paint().apply {
@@ -53,6 +51,10 @@ class cnvsview (context: Context) : View(context)  {
     }
     override fun onSizeChanged(width: Int, height: Int, oldWidth: Int, oldHeight: Int) {
         super.onSizeChanged(width, height, oldWidth, oldHeight)
+        if(MainActivity.Companion.vards==""){
+            waitForName()
+        }
+        // the author changed her/his code??? ok will add reference to the new place
         // However, this is a memory leak, leaving the old bitmaps around. To fix this,
         // recycle extraBitmap before creating the next one by adding this code right after
         // the call to super
@@ -61,6 +63,24 @@ class cnvsview (context: Context) : View(context)  {
         extraCanvas = Canvas(extraBitmap)
         extraCanvas.drawColor(Color.parseColor("#FFAAFF"))
 
+    }
+    fun waitForName(){
+        val bld = AlertDialog.Builder(this.context)
+        val infl = (this.context as Activity).layoutInflater
+        bld.setTitle("Ievadi savu vārdu:")
+        val dlgl = infl.inflate(R.layout.varda_ievade, null)
+        val edt = dlgl.findViewById<EditText>(R.id.editTextTextPersonName)
+        bld.setView(dlgl)
+        bld.setPositiveButton("ok" ,  fun(_: DialogInterface, _: Int) {
+            MainActivity.Companion.vards = edt.text.toString()
+            this.reset()
+        })
+        bld.setOnCancelListener(fun(di: DialogInterface){
+            MainActivity.Companion.vards = edt.text.toString()
+            if(MainActivity.Companion.vards=="") waitForName()
+        })
+        bld.create()
+        bld.show()
     }
 
     override fun onTouchEvent(event: MotionEvent?): Boolean {
@@ -172,7 +192,6 @@ class cnvsview (context: Context) : View(context)  {
         super.onDraw(canvas)
         canvas.drawBitmap(extraBitmap, 0f, 0f, null)
 //        var windowMetrics = WindowMetricsCalculator.getOrCreate().computeCurrentWindowMetrics(context as Activity)
-        println(d_width)
         val OffsetV: Int = 0//this.top// windowMetrics.bounds.top
         val crd:
                 inTupleTsorrynotypeparamThere = MainActivity.Companion.state.setRutis(
