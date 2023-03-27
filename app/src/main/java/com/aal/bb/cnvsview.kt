@@ -3,9 +3,13 @@ import android.content.Context
 import android.graphics.*
 import android.view.View
 import android.app.Activity
+import android.content.DialogInterface
 import androidx.window.layout.WindowMetrics;
 import androidx.window.layout.WindowMetricsCalculator;
 import android.graphics.RectF
+import android.view.MotionEvent
+import androidx.appcompat.app.AlertDialog
+import kotlin.math.roundToInt
 
 
 
@@ -57,13 +61,65 @@ class cnvsview (context: Context) : View(context)  {
         extraCanvas.drawColor(Color.parseColor("#FFAAFF"))
 
     }
+
+    override fun onTouchEvent(event: MotionEvent?): Boolean {
+        val hasHit: Boolean  = MainActivity.Companion.state.hit(event?.x!!?.roundToInt(), event.y.roundToInt())
+//        val hasHit: Boolean? =
+//            event?.rawX?.let { MainActivity.Companion.state.hit(it?.roundToInt(), event?.rawY.roundToInt()) }
+        if (hasHit) this.invalidate()
+        var uzvrtajs: desuZime? = null
+        if (MainActivity.Companion.state.isVictory.also { uzvrtajs = it } != null) {
+            if (uzvrtajs === desuZime.krusts) {
+                this.redraw()
+                val alertDialogBuilder = AlertDialog.Builder(this.context)
+                alertDialogBuilder.setMessage("zaude!")
+
+                alertDialogBuilder.setPositiveButton("ok" ,  fun(_: DialogInterface, _: Int) {
+                    this.reset()
+                })
+                alertDialogBuilder.setOnCancelListener(fun(_: DialogInterface){
+                    this.reset()
+                })
+                alertDialogBuilder.create()
+                alertDialogBuilder.show()
+                return super.onTouchEvent(event)
+            } else {
+                this.redraw()
+//                draw(extraCanvas)
+                val alertDialogBuilder = AlertDialog.Builder(this.context)
+                alertDialogBuilder.setMessage("uzvara!")
+                alertDialogBuilder.setPositiveButton("ok" ,  fun(_: DialogInterface, _: Int) {
+                    this.reset()
+                })
+                alertDialogBuilder.setOnCancelListener(fun(_: DialogInterface){
+                    this.reset()
+                })
+                alertDialogBuilder.create()
+                alertDialogBuilder.show()
+                return super.onTouchEvent(event)
+            }
+        }
+        if ((MainActivity.Companion.state.db or MainActivity.Companion.state.n0) === 0b1111111111) {
+            val alertDialogBuilder = AlertDialog.Builder(this.context)
+            alertDialogBuilder.setMessage("neizskirts!")
+            alertDialogBuilder.setPositiveButton("ok" ,  fun(_: DialogInterface, _: Int) {
+                this.reset()
+            })
+            alertDialogBuilder.setOnCancelListener(fun(_: DialogInterface){
+                this.reset()
+            })
+            alertDialogBuilder.create()
+            alertDialogBuilder.show()
+            return super.onTouchEvent(event)
+        }
+        return super.onTouchEvent(event)
+    }
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
         canvas.drawBitmap(extraBitmap, 0f, 0f, null)
-        var pp = Path()
-        var windowMetrics = WindowMetricsCalculator.getOrCreate().computeCurrentWindowMetrics(context as Activity)
+//        var windowMetrics = WindowMetricsCalculator.getOrCreate().computeCurrentWindowMetrics(context as Activity)
         println(d_width)
-        val OffsetV: Int = windowMetrics.bounds.top
+        val OffsetV: Int = 0//this.top// windowMetrics.bounds.top
         val crd:
                 inTupleTsorrynotypeparamThere = MainActivity.Companion.state.setRutis(
             inTupleTsorrynotypeparamThere(
@@ -107,15 +163,15 @@ class cnvsview (context: Context) : View(context)  {
         val hSolis = this.width / 3
         val top = OffsetV + this.height / 3 / 2 - zimesPlatums / 2 - 0
         val vSolis = (this.height - OffsetV) / 3
-        MainActivity.Companion.state.s(desuZime.krusts, 0, 0)
-        MainActivity.Companion.state.s(desuZime.nulle, 0, 1)
-        MainActivity.Companion.state.s(desuZime.krusts, 0, 2)
-        MainActivity.Companion.state.s(desuZime.nulle, 1, 0)
-        MainActivity.Companion.state.s(desuZime.krusts, 1, 1)
-        MainActivity.Companion.state.s(desuZime.nulle, 1, 2)
-        MainActivity.Companion.state.s(desuZime.krusts, 2, 0)
-        MainActivity.Companion.state.s(desuZime.nulle, 2, 1)
-        MainActivity.Companion.state.s(desuZime.krusts, 2, 2)
+//        MainActivity.Companion.state.s(desuZime.krusts, 0, 0)
+//        MainActivity.Companion.state.s(desuZime.nulle, 0, 1)
+//        MainActivity.Companion.state.s(desuZime.krusts, 0, 2)
+//        MainActivity.Companion.state.s(desuZime.nulle, 1, 0)
+//        MainActivity.Companion.state.s(desuZime.krusts, 1, 1)
+//        MainActivity.Companion.state.s(desuZime.nulle, 1, 2)
+//        MainActivity.Companion.state.s(desuZime.krusts, 2, 0)
+//        MainActivity.Companion.state.s(desuZime.nulle, 2, 1)
+//        MainActivity.Companion.state.s(desuZime.krusts, 2, 2)
         val drws:
                 Array<Array<desuZime?>> = MainActivity.Companion.state.g()
         for (i in drws.indices) {
@@ -141,5 +197,19 @@ class cnvsview (context: Context) : View(context)  {
         }
 
 
+    }
+
+    fun reset() : Boolean{
+        MainActivity.Companion.state.clear()
+        return redraw()
+    }
+    fun redraw() : Boolean{
+        if (::extraBitmap.isInitialized) extraBitmap.recycle()
+        extraBitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
+        extraCanvas = Canvas(extraBitmap)
+        extraCanvas.drawColor(Color.parseColor("#FFAAFF"))
+        this.invalidate()
+//        this.requestLayout()
+        return true
     }
 }
