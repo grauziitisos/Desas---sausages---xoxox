@@ -8,7 +8,8 @@ class MainActivity : AppCompatActivity() {
         var state = desasState()
         var vards : String =""
         var rezims: playmode = playmode.Single
-        var gaja: Boolean = false;
+        var gaja: Boolean = false
+        var pirm_spel_zime : desuZime = desuZime.nulle
     }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

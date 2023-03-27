@@ -2,4 +2,6 @@
     <string name="app_name">bb</string>
     <string name="twoplay">Divu spēlētāju</string>
     <string name="singleplay">Viena spēlētaja</string>
+    <string name="krusts_mode">Krustiņi</string>
+    <string name="nulle_mode">Aplīši</string>
 </resources>

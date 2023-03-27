@@ -74,10 +74,28 @@ class cnvsview (context: Context) : View(context)  {
         bld.setView(dlgl)
         bld.setPositiveButton("ok" ,  fun(_: DialogInterface, _: Int) {
             MainActivity.Companion.rezims= if (edt.checkedRadioButtonId == R.id.radio_two_play) playmode.Two else  playmode.Single
-            waitForName()
+            waitForZime()
         })
         bld.setOnCancelListener(fun(di: DialogInterface){
             MainActivity.Companion.rezims= if (edt.checkedRadioButtonId == R.id.radio_two_play) playmode.Two else  playmode.Single
+            waitForZime()
+        })
+        bld.create()
+        bld.show()
+    }
+    fun waitForZime(){
+        val bld = AlertDialog.Builder(this.context)
+        val infl = (this.context as Activity).layoutInflater
+        bld.setTitle("Izvēlies zīmi:")
+        val dlgl = infl.inflate(R.layout.zime_ievade, null)
+        val edt = dlgl.findViewById<RadioGroup>(R.id.radio_zime_choice)
+        bld.setView(dlgl)
+        bld.setPositiveButton("ok" ,  fun(_: DialogInterface, _: Int) {
+            MainActivity.Companion.pirm_spel_zime= if (edt.checkedRadioButtonId == R.id.radio_krusts_mode) desuZime.krusts else  desuZime.nulle
+            waitForName()
+        })
+        bld.setOnCancelListener(fun(di: DialogInterface){
+            MainActivity.Companion.pirm_spel_zime= if (edt.checkedRadioButtonId == R.id.radio_krusts_mode) desuZime.krusts else  desuZime.nulle
             waitForName()
         })
         bld.create()
@@ -102,8 +120,14 @@ class cnvsview (context: Context) : View(context)  {
         bld.show()
     }
 
+    fun negateZimi(z: desuZime) : desuZime{
+        return if (z==desuZime.nulle) desuZime.krusts else desuZime.nulle
+    }
     override fun onTouchEvent(event: MotionEvent?): Boolean {
+        if(MainActivity.Companion.pirm_spel_zime == desuZime.nulle)
         MainActivity.Companion.state.isHitterCross = MainActivity.Companion.gaja
+            else
+            MainActivity.Companion.state.isHitterCross = !MainActivity.Companion.gaja
         val hasHit: Boolean  = MainActivity.Companion.state.hit(event?.x!!?.roundToInt(), event.y.roundToInt())
 //        val hasHit: Boolean? =
 //            event?.rawX?.let { MainActivity.Companion.state.hit(it?.roundToInt(), event?.rawY.roundToInt()) }
@@ -111,7 +135,7 @@ class cnvsview (context: Context) : View(context)  {
         else return super.onTouchEvent(event)
         var uzvrtajs: desuZime? = null
         if (MainActivity.Companion.state.isVictory.also { uzvrtajs = it } != null) {
-            if (uzvrtajs === desuZime.krusts) {
+            if (uzvrtajs === negateZimi(MainActivity.Companion.pirm_spel_zime)) {
                 val alertDialogBuilder = AlertDialog.Builder(this.context)
                 alertDialogBuilder.setMessage("${MainActivity.Companion.vards} zaude!")
 
@@ -169,7 +193,7 @@ class cnvsview (context: Context) : View(context)  {
             return super.onTouchEvent(event)
         }
         if (MainActivity.Companion.state.isVictory.also { uzvrtajs = it } != null) {
-            if (uzvrtajs === desuZime.krusts) {
+            if (uzvrtajs === negateZimi(MainActivity.Companion.pirm_spel_zime)) {
                 val alertDialogBuilder = AlertDialog.Builder(this.context)
                 alertDialogBuilder.setMessage("${MainActivity.Companion.vards} zaude!")
 
@@ -207,7 +231,7 @@ class cnvsview (context: Context) : View(context)  {
             c = rnd.nextInt(3)
             r = rnd.nextInt(3)
         }
-        MainActivity.Companion.state.s(desuZime.krusts, r, c)
+        MainActivity.Companion.state.s(negateZimi(MainActivity.Companion.pirm_spel_zime), r, c)
     }
 
     override fun onDraw(canvas: Canvas) {
