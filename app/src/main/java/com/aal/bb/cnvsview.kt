@@ -9,6 +9,7 @@ import androidx.window.layout.WindowMetricsCalculator;
 import android.graphics.RectF
 import android.view.MotionEvent
 import androidx.appcompat.app.AlertDialog
+import java.util.*
 import kotlin.math.roundToInt
 
 
@@ -70,7 +71,6 @@ class cnvsview (context: Context) : View(context)  {
         var uzvrtajs: desuZime? = null
         if (MainActivity.Companion.state.isVictory.also { uzvrtajs = it } != null) {
             if (uzvrtajs === desuZime.krusts) {
-                this.redraw()
                 val alertDialogBuilder = AlertDialog.Builder(this.context)
                 alertDialogBuilder.setMessage("zaude!")
 
@@ -84,7 +84,6 @@ class cnvsview (context: Context) : View(context)  {
                 alertDialogBuilder.show()
                 return super.onTouchEvent(event)
             } else {
-                this.redraw()
 //                draw(extraCanvas)
                 val alertDialogBuilder = AlertDialog.Builder(this.context)
                 alertDialogBuilder.setMessage("uzvara!")
@@ -112,8 +111,63 @@ class cnvsview (context: Context) : View(context)  {
             alertDialogBuilder.show()
             return super.onTouchEvent(event)
         }
+        doMove();
+        this.invalidate()
+        if ((MainActivity.Companion.state.db or MainActivity.Companion.state.n0) === 0b1111111111) {
+            val alertDialogBuilder = AlertDialog.Builder(this.context)
+            alertDialogBuilder.setMessage("neizskirts!")
+            alertDialogBuilder.setPositiveButton("ok" ,  fun(_: DialogInterface, _: Int) {
+                this.reset()
+            })
+            alertDialogBuilder.setOnCancelListener(fun(_: DialogInterface){
+                this.reset()
+            })
+            alertDialogBuilder.create()
+            alertDialogBuilder.show()
+            return super.onTouchEvent(event)
+        }
+        if (MainActivity.Companion.state.isVictory.also { uzvrtajs = it } != null) {
+            if (uzvrtajs === desuZime.krusts) {
+                val alertDialogBuilder = AlertDialog.Builder(this.context)
+                alertDialogBuilder.setMessage("zaude!")
+
+                alertDialogBuilder.setPositiveButton("ok" ,  fun(_: DialogInterface, _: Int) {
+                    this.reset()
+                })
+                alertDialogBuilder.setOnCancelListener(fun(_: DialogInterface){
+                    this.reset()
+                })
+                alertDialogBuilder.create()
+                alertDialogBuilder.show()
+                return super.onTouchEvent(event)
+            } else {
+//                draw(extraCanvas)
+                val alertDialogBuilder = AlertDialog.Builder(this.context)
+                alertDialogBuilder.setMessage("uzvara!")
+                alertDialogBuilder.setPositiveButton("ok" ,  fun(_: DialogInterface, _: Int) {
+                    this.reset()
+                })
+                alertDialogBuilder.setOnCancelListener(fun(_: DialogInterface){
+                    this.reset()
+                })
+                alertDialogBuilder.create()
+                alertDialogBuilder.show()
+                return super.onTouchEvent(event)
+            }
+        }
         return super.onTouchEvent(event)
     }
+    var rnd: Random = Random()
+    private fun doMove() {
+        var c = rnd.nextInt(3)
+        var r = rnd.nextInt(3)
+        while (MainActivity.Companion.state.db and (1 shl r * 3 + c) === 1 shl r * 3 + c || MainActivity.Companion.state.n0 and (1 shl r * 3 + c) === 1 shl r * 3 + c) {
+            c = rnd.nextInt(3)
+            r = rnd.nextInt(3)
+        }
+        MainActivity.Companion.state.s(desuZime.krusts, r, c)
+    }
+
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
         canvas.drawBitmap(extraBitmap, 0f, 0f, null)
@@ -198,6 +252,7 @@ class cnvsview (context: Context) : View(context)  {
 
 
     }
+
 
     fun reset() : Boolean{
         MainActivity.Companion.state.clear()
