@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">bb</string>
+    <string name="twoplay">Divu spēlētāju</string>
+    <string name="singleplay">Viena spēlētaja</string>
 </resources>

@@ -9,6 +9,7 @@ import androidx.window.layout.WindowMetricsCalculator;
 import android.graphics.RectF
 import android.view.MotionEvent
 import android.widget.EditText
+import android.widget.RadioGroup
 import androidx.appcompat.app.AlertDialog
 import java.util.*
 import kotlin.math.roundToInt
@@ -52,7 +53,7 @@ class cnvsview (context: Context) : View(context)  {
     override fun onSizeChanged(width: Int, height: Int, oldWidth: Int, oldHeight: Int) {
         super.onSizeChanged(width, height, oldWidth, oldHeight)
         if(MainActivity.Companion.vards==""){
-            waitForName()
+            waitForMode()
         }
         // the author changed her/his code??? ok will add reference to the new place
         // However, this is a memory leak, leaving the old bitmaps around. To fix this,
@@ -63,6 +64,24 @@ class cnvsview (context: Context) : View(context)  {
         extraCanvas = Canvas(extraBitmap)
         extraCanvas.drawColor(Color.parseColor("#FFAAFF"))
 
+    }
+    fun waitForMode(){
+        val bld = AlertDialog.Builder(this.context)
+        val infl = (this.context as Activity).layoutInflater
+        bld.setTitle("Izvēlies režīmu:")
+        val dlgl = infl.inflate(R.layout.rezims_ievade, null)
+        val edt = dlgl.findViewById<RadioGroup>(R.id.radio_mode_choice)
+        bld.setView(dlgl)
+        bld.setPositiveButton("ok" ,  fun(_: DialogInterface, _: Int) {
+            MainActivity.Companion.rezims= if (edt.checkedRadioButtonId == R.id.radio_two_play) playmode.Two else  playmode.Single
+            waitForName()
+        })
+        bld.setOnCancelListener(fun(di: DialogInterface){
+            MainActivity.Companion.rezims= if (edt.checkedRadioButtonId == R.id.radio_two_play) playmode.Two else  playmode.Single
+            waitForName()
+        })
+        bld.create()
+        bld.show()
     }
     fun waitForName(){
         val bld = AlertDialog.Builder(this.context)
@@ -84,6 +103,7 @@ class cnvsview (context: Context) : View(context)  {
     }
 
     override fun onTouchEvent(event: MotionEvent?): Boolean {
+        MainActivity.Companion.state.isHitterCross = MainActivity.Companion.gaja
         val hasHit: Boolean  = MainActivity.Companion.state.hit(event?.x!!?.roundToInt(), event.y.roundToInt())
 //        val hasHit: Boolean? =
 //            event?.rawX?.let { MainActivity.Companion.state.hit(it?.roundToInt(), event?.rawY.roundToInt()) }
@@ -93,7 +113,7 @@ class cnvsview (context: Context) : View(context)  {
         if (MainActivity.Companion.state.isVictory.also { uzvrtajs = it } != null) {
             if (uzvrtajs === desuZime.krusts) {
                 val alertDialogBuilder = AlertDialog.Builder(this.context)
-                alertDialogBuilder.setMessage("zaude!")
+                alertDialogBuilder.setMessage("${MainActivity.Companion.vards} zaude!")
 
                 alertDialogBuilder.setPositiveButton("ok" ,  fun(_: DialogInterface, _: Int) {
                     this.reset()
@@ -107,7 +127,7 @@ class cnvsview (context: Context) : View(context)  {
             } else {
 //                draw(extraCanvas)
                 val alertDialogBuilder = AlertDialog.Builder(this.context)
-                alertDialogBuilder.setMessage("uzvara!")
+                alertDialogBuilder.setMessage("${MainActivity.Companion.vards} uzvara!")
                 alertDialogBuilder.setPositiveButton("ok" ,  fun(_: DialogInterface, _: Int) {
                     this.reset()
                 })
@@ -132,7 +152,8 @@ class cnvsview (context: Context) : View(context)  {
             alertDialogBuilder.show()
             return super.onTouchEvent(event)
         }
-        doMove();
+        MainActivity.Companion.gaja = !MainActivity.Companion.gaja;
+        if(MainActivity.Companion.rezims == playmode.Single) { doMove(); MainActivity.Companion.gaja = false}
         this.invalidate()
         if ((MainActivity.Companion.state.db or MainActivity.Companion.state.n0) === 0b1111111111) {
             val alertDialogBuilder = AlertDialog.Builder(this.context)
@@ -150,7 +171,7 @@ class cnvsview (context: Context) : View(context)  {
         if (MainActivity.Companion.state.isVictory.also { uzvrtajs = it } != null) {
             if (uzvrtajs === desuZime.krusts) {
                 val alertDialogBuilder = AlertDialog.Builder(this.context)
-                alertDialogBuilder.setMessage("zaude!")
+                alertDialogBuilder.setMessage("${MainActivity.Companion.vards} zaude!")
 
                 alertDialogBuilder.setPositiveButton("ok" ,  fun(_: DialogInterface, _: Int) {
                     this.reset()
@@ -164,7 +185,7 @@ class cnvsview (context: Context) : View(context)  {
             } else {
 //                draw(extraCanvas)
                 val alertDialogBuilder = AlertDialog.Builder(this.context)
-                alertDialogBuilder.setMessage("uzvara!")
+                alertDialogBuilder.setMessage("${MainActivity.Companion.vards} uzvara!")
                 alertDialogBuilder.setPositiveButton("ok" ,  fun(_: DialogInterface, _: Int) {
                     this.reset()
                 })
